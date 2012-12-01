@@ -330,7 +330,7 @@ static void import_kernel_nv(const std::string& key, const std::string& value, b
 
     if (key == "qemu") {
         strlcpy(qemu, value.c_str(), sizeof(qemu));
-    } else if (key == BOARD_CHARGING_CMDLINE_NAME) {
+    } else if (key == BOARD_CHANGING_CMDLINE_NAME) {
         strlcpy(battchg_pause, value.c_str(), sizeof(battchg_pause));
     } else if (android::base::StartsWith(key, "androidboot.")) {
         property_set(android::base::StringPrintf("ro.boot.%s", key.c_str() + 12).c_str(),
@@ -672,7 +672,8 @@ int main(int argc, char** argv) {
 
     // Don't mount filesystems or start core system services in charger mode.
     std::string bootmode = property_get("ro.bootmode");
-    if (bootmode == "charger" || charging_mode_booting()) {
+    if (bootmode == "charger" || charging_mode_booting() ||
+            strcmp(battchg_pause, BOARD_CHARGING_CMDLINE_VALUE) == 0) {
         am.QueueEventTrigger("charger");
     } else if (strncmp(bootmode.c_str(), "ffbm", 4) == 0) {
         NOTICE("Booting into ffbm mode\n");
