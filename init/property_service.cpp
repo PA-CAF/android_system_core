@@ -57,6 +57,7 @@
 #include <selinux/selinux.h>
 
 #include "init.h"
+#include "log.h"
 #include "util.h"
 #include "vendor_init.h"
 
