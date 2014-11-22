@@ -512,6 +512,7 @@ static char **get_block_device_symlinks(struct uevent *uevent)
     char link_path[256];
     int link_num = 0;
     char *p;
+    int is_bootdevice = -1;
     int mtd_fd = -1;
     int nr;
     char mtd_name_path[256];
@@ -561,6 +562,13 @@ static char **get_block_device_symlinks(struct uevent *uevent)
         else
             links[link_num] = NULL;
         free(p);
+    }
+
+    if (pdev && boot_device.c_str()[0] != '\0' && strstr(device, boot_device.c_str())) {
+        make_link_init(link_path, "/dev/block/bootdevice");
+        is_bootdevice = 1;
+    } else {
+        is_bootdevice = 0;
     }
 
     if (uevent->partition_name) {
